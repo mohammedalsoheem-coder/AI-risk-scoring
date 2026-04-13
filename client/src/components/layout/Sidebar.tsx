@@ -42,7 +42,7 @@ export default function Sidebar() {
         ))}
       </nav>
       <div className="p-4 border-t border-gray-200 text-xs text-mt-grey">
-        <p>Mumtathil IQ v1.0</p>
+        <p>AI Smart Compliance v1.0</p>
         <p className="mt-1">Vision 2030</p>
       </div>
     </aside>

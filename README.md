@@ -1,4 +1,4 @@
-# Mumtathil IQ | ممتثل آي كيو
+# AI Smart Compliance | الامتثال الذكي
 
 **AI-Powered Facility Risk Scoring & Compliance Intelligence Dashboard**
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Mumtathil IQ provides AI-driven risk scoring, compliance monitoring, and inspection prioritization for 300+ licensed tourism facilities across Saudi Arabia, aligned with Vision 2030 quality targets.
+AI Smart Compliance provides AI-driven risk scoring, compliance monitoring, and inspection prioritization for 300+ licensed tourism facilities across Saudi Arabia, aligned with Vision 2030 quality targets.
 
 ## Features
 

@@ -63,7 +63,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // ---------------------------------------------------------------------------
 
 app.listen(PORT, () => {
-  console.log(`Mumtathil IQ server listening on http://localhost:${PORT}`);
+  console.log(`AI Smart Compliance server listening on http://localhost:${PORT}`);
 });
 
 export default app;

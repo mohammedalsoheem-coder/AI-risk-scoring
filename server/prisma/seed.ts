@@ -542,7 +542,7 @@ function generateAiClassification(type: string, severity: string): object {
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log('Seeding Mumtathil IQ database...\n');
+  console.log('Seeding AI Smart Compliance database...\n');
 
   // Clear existing data in dependency order
   await prisma.complaint.deleteMany();

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(where node:*)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs:/c/Users/SoheemM/AppData/Roaming/npm\")",
+      "Bash(npm --version)",
+      "Bash(cmd.exe /c \"node --version && npm --version\")",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c/Users/SoheemM/**)",
+      "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command 'Get-Command npm -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; $env:PATH -split '\\\\'';'\\\\'' | Where-Object { $_ -match '\\\\''node'\\\\'' }')",
+      "Bash(powershell.exe -Command '[System.Environment]::GetEnvironmentVariable\\('\\\\''PATH'\\\\'', '\\\\''Machine'\\\\''\\) -split '\\\\'';'\\\\'' | Where-Object { $_ -ne '\\\\'''\\\\'' } | ForEach-Object { if \\(Test-Path \\(Join-Path $_ '\\\\''node.exe'\\\\''\\)\\) { Write-Output $_ } }')",
+      "Bash(powershell.exe -Command \"Get-Command gh -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "WebFetch(domain:v0-mohammedalsoheem-8001-fa9cc7ab.vercel.app)",
+      "WebFetch(domain:ai-risk-scoring.vercel.app)",
+      "WebFetch(domain:ai-risk-scoring-mohammedalsoheem-coders-projects.vercel.app)"
+    ]
+  }
+}
