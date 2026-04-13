@@ -1,0 +1,123 @@
+{
+  "app": {
+    "title": "ممتثل آي كيو",
+    "subtitle": "لوحة الامتثال الذكية",
+    "ministry": "Ministry of Tourism",
+    "ministryAr": "وزارة السياحة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "facilities": "المنشآت",
+    "map": "الخريطة الذكية",
+    "violations": "المخالفات",
+    "inspections": "التفتيش",
+    "reports": "التقارير"
+  },
+  "dashboard": {
+    "title": "لوحة الامتثال",
+    "totalFacilities": "إجمالي المنشآت",
+    "highRisk": "مخاطر عالية",
+    "pendingInspections": "تفتيشات معلقة",
+    "avgScore": "متوسط درجة المخاطر",
+    "priorityQueue": "قائمة الأولويات",
+    "priorityDesc": "أعلى المنشآت التي تتطلب إعادة تفتيش فوري",
+    "riskDistribution": "توزيع المخاطر",
+    "recentViolations": "المخالفات الأخيرة",
+    "complianceRate": "معدل الامتثال"
+  },
+  "facilities": {
+    "title": "المنشآت",
+    "search": "البحث عن المنشآت...",
+    "filter": "تصفية",
+    "name": "اسم المنشأة",
+    "type": "النوع",
+    "region": "المنطقة",
+    "riskScore": "درجة المخاطر",
+    "riskLevel": "مستوى المخاطر",
+    "lastInspection": "آخر تفتيش",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "hotel": "فندق",
+    "resort": "منتجع",
+    "restaurant": "مطعم",
+    "attraction": "معلم سياحي"
+  },
+  "facility": {
+    "details": "تفاصيل المنشأة",
+    "aiAnalysis": "تحليل المخاطر بالذكاء الاصطناعي",
+    "generateAnalysis": "إنشاء تحليل ذكي",
+    "analyzing": "جاري تحليل بيانات المنشأة...",
+    "riskBreakdown": "تفصيل درجة المخاطر",
+    "safetyCompliance": "امتثال السلامة",
+    "serviceQuality": "جودة الخدمة",
+    "documentation": "التوثيق",
+    "repeatBehavior": "السلوك المتكرر",
+    "topRisks": "أعلى عوامل الخطر",
+    "recommendations": "التوصيات",
+    "trend": "اتجاه الامتثال",
+    "improving": "تحسن",
+    "declining": "تراجع",
+    "stable": "مستقر",
+    "inspectionHistory": "سجل التفتيش",
+    "violationHistory": "سجل المخالفات",
+    "complaintHistory": "سجل الشكاوى",
+    "timeline": "الجدول الزمني"
+  },
+  "violations": {
+    "title": "المخالفات",
+    "classify": "تصنيف بالذكاء الاصطناعي",
+    "classifyDesc": "أدخل وصف المخالفة للحصول على تصنيف ذكي",
+    "description": "وصف المخالفة",
+    "classifyBtn": "تصنيف المخالفة",
+    "classifying": "جاري التصنيف...",
+    "category": "الفئة",
+    "severity": "الشدة",
+    "article": "المادة التنظيمية",
+    "penalty": "العقوبة",
+    "date": "التاريخ",
+    "facility": "المنشأة"
+  },
+  "inspections": {
+    "title": "إنشاء قائمة التفتيش",
+    "facilityType": "نوع المنشأة",
+    "classification": "التصنيف",
+    "generate": "إنشاء القائمة",
+    "generating": "جاري الإنشاء...",
+    "checklist": "قائمة التفتيش",
+    "exportPdf": "تصدير PDF"
+  },
+  "map": {
+    "title": "الخريطة الحرارية الذكية",
+    "violationDensity": "كثافة المخالفات",
+    "filterByRisk": "تصفية حسب مستوى المخاطر",
+    "filterByDate": "تصفية حسب التاريخ",
+    "filterByType": "تصفية حسب نوع المخالفة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "exportExcel": "تصدير إلى Excel",
+    "exportPdf": "تصدير إلى PDF"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "aiGenerated": "تم إنشاؤه بالذكاء الاصطناعي",
+    "confidential": "سري",
+    "noData": "لا توجد بيانات",
+    "all": "الكل"
+  },
+  "risk": {
+    "low": "منخفض",
+    "medium": "متوسط",
+    "high": "عالي",
+    "critical": "حرج"
+  }
+}

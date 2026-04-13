@@ -1,0 +1,248 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Download, FileText, Table } from 'lucide-react';
+import { useApi } from '../hooks/useApi';
+import { getFacilities, getViolations } from '../services/api';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+
+export default function Reports() {
+  const { t } = useTranslation();
+  const [reportType, setReportType] = useState<'facilities' | 'violations'>('facilities');
+  const { data: facilities, loading: fLoading } = useApi(getFacilities);
+  const { data: violations, loading: vLoading } = useApi(getViolations);
+
+  const exportToCSV = (data: any[], filename: string) => {
+    if (!data || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join(','),
+      ...data.map((row) =>
+        headers.map((h) => {
+          const val = row[h];
+          if (val === null || val === undefined) return '';
+          const str = typeof val === 'object' ? JSON.stringify(val) : String(val);
+          return `"${str.replace(/"/g, '""')}"`;
+        }).join(',')
+      ),
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
+  const exportFacilities = () => {
+    if (!facilities) return;
+    const data = facilities.map((f) => ({
+      'License Number': f.licenseNumber,
+      'Name (EN)': f.nameEn,
+      'Name (AR)': f.nameAr,
+      Type: f.type,
+      Classification: f.classification,
+      Region: f.region,
+      City: f.city,
+      'Risk Score': f.riskScore.toFixed(1),
+      'Risk Level': f.riskLevel,
+      'Last Inspection': f.lastInspection ? new Date(f.lastInspection).toLocaleDateString() : 'N/A',
+      'License Expiry': new Date(f.licenseExpiry).toLocaleDateString(),
+    }));
+    exportToCSV(data, 'MT_Facilities_Report');
+  };
+
+  const exportViolations = () => {
+    if (!violations) return;
+    const data = violations.map((v) => ({
+      Date: new Date(v.date).toLocaleDateString(),
+      Facility: v.facility?.nameEn || v.facilityId,
+      Type: v.type,
+      Severity: v.severity,
+      Description: v.description,
+      'Regulatory Article': v.regulatoryArticle || 'N/A',
+      Penalty: v.penalty ? `SAR ${v.penalty}` : 'N/A',
+      Status: v.status,
+    }));
+    exportToCSV(data, 'MT_Violations_Report');
+  };
+
+  const printReport = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const data = reportType === 'facilities' ? facilities : violations;
+    if (!data) return;
+
+    const title = reportType === 'facilities' ? 'Facilities Compliance Report' : 'Violations Report';
+
+    const tableHeaders = reportType === 'facilities'
+      ? ['License', 'Name', 'Type', 'Region', 'Risk Score', 'Risk Level']
+      : ['Date', 'Facility', 'Type', 'Severity', 'Status', 'Penalty'];
+
+    const tableRows = reportType === 'facilities'
+      ? (facilities || []).map((f) => [
+          f.licenseNumber, f.nameEn, f.type, `${f.city}, ${f.region}`,
+          f.riskScore.toFixed(0), f.riskLevel,
+        ])
+      : (violations || []).map((v) => [
+          new Date(v.date).toLocaleDateString(), v.facility?.nameEn || '—',
+          v.type, v.severity, v.status, v.penalty ? `SAR ${v.penalty}` : '—',
+        ]);
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${title} - Ministry of Tourism</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 40px; color: #003232; }
+          h1 { font-size: 20px; border-bottom: 2px solid #003232; padding-bottom: 10px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+          th { background: #003232; color: white; padding: 8px; text-align: left; }
+          td { padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
+          tr:nth-child(even) { background: #f9fafb; }
+          .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80px; color: rgba(0,50,50,0.06); font-weight: bold; pointer-events: none; }
+          .footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 11px; color: #556478; }
+        </style>
+      </head>
+      <body>
+        <div class="watermark">CONFIDENTIAL</div>
+        <h1>وزارة السياحة | Ministry of Tourism</h1>
+        <h2>${title}</h2>
+        <p>Generated: ${new Date().toLocaleString()} | Total Records: ${data.length}</p>
+        <table>
+          <thead><tr>${tableHeaders.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${tableRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+        <div class="footer">
+          <p>Generated by Mumtathil IQ — AI-Powered Compliance Intelligence</p>
+          <p>CONFIDENTIAL — Ministry of Tourism Internal Use Only</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const loading = fLoading || vLoading;
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-mt-dark-green">{t('reports.title')}</h1>
+
+      {loading ? (
+        <LoadingSpinner message={t('common.loading')} />
+      ) : (
+        <>
+          {/* Report Type Selector */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex gap-4 mb-6">
+              <button
+                onClick={() => setReportType('facilities')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                  reportType === 'facilities'
+                    ? 'bg-mt-dark-green text-white'
+                    : 'bg-gray-100 text-mt-grey hover:bg-gray-200'
+                }`}
+              >
+                <Table size={16} />
+                Facilities Report ({facilities?.length || 0})
+              </button>
+              <button
+                onClick={() => setReportType('violations')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                  reportType === 'violations'
+                    ? 'bg-mt-dark-green text-white'
+                    : 'bg-gray-100 text-mt-grey hover:bg-gray-200'
+                }`}
+              >
+                <FileText size={16} />
+                Violations Report ({violations?.length || 0})
+              </button>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={reportType === 'facilities' ? exportFacilities : exportViolations}
+                className="btn-primary flex items-center gap-2"
+              >
+                <Download size={14} />
+                {t('reports.exportExcel')} (CSV)
+              </button>
+              <button onClick={printReport} className="btn-secondary flex items-center gap-2">
+                <FileText size={14} />
+                {t('reports.exportPdf')}
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Table */}
+          <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
+            <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
+              <p className="text-sm text-mt-grey font-bold">Preview — First 20 records</p>
+            </div>
+            {reportType === 'facilities' ? (
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="table-header">License</th>
+                    <th className="table-header">Name</th>
+                    <th className="table-header">Type</th>
+                    <th className="table-header">Region</th>
+                    <th className="table-header">Risk Score</th>
+                    <th className="table-header">Risk Level</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(facilities || []).slice(0, 20).map((f) => (
+                    <tr key={f.id} className="hover:bg-gray-50">
+                      <td className="table-cell text-xs font-mono">{f.licenseNumber}</td>
+                      <td className="table-cell text-sm font-bold">{f.nameEn}</td>
+                      <td className="table-cell capitalize">{f.type}</td>
+                      <td className="table-cell">{f.city}, {f.region}</td>
+                      <td className="table-cell font-bold">{f.riskScore.toFixed(0)}</td>
+                      <td className="table-cell">
+                        <span className={`badge-${f.riskLevel.toLowerCase()}`}>{f.riskLevel}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="table-header">Date</th>
+                    <th className="table-header">Facility</th>
+                    <th className="table-header">Type</th>
+                    <th className="table-header">Severity</th>
+                    <th className="table-header">Status</th>
+                    <th className="table-header">Penalty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(violations || []).slice(0, 20).map((v) => (
+                    <tr key={v.id} className="hover:bg-gray-50">
+                      <td className="table-cell text-xs">{new Date(v.date).toLocaleDateString()}</td>
+                      <td className="table-cell text-sm font-bold">{v.facility?.nameEn || '—'}</td>
+                      <td className="table-cell capitalize">{v.type.replace(/_/g, ' ')}</td>
+                      <td className="table-cell">
+                        <span className={`badge-${v.severity.toLowerCase()}`}>{v.severity}</span>
+                      </td>
+                      <td className="table-cell capitalize">{v.status}</td>
+                      <td className="table-cell">{v.penalty ? `SAR ${v.penalty.toLocaleString()}` : '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

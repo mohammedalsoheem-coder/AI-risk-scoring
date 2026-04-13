@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  nameEn    String
+  nameAr    String
+  role      String   @default("inspector") // admin, manager, inspector
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Facility {
+  id             String       @id @default(cuid())
+  nameAr         String
+  nameEn         String
+  type           String       // hotel, resort, restaurant, attraction
+  classification String       // 5-star, 4-star, etc.
+  region         String
+  city           String
+  lat            Float
+  lng            Float
+  licenseNumber  String       @unique
+  licenseExpiry  DateTime
+  riskScore      Float        @default(0)
+  riskLevel      String       @default("Low")
+  lastInspection DateTime?
+  inspections    Inspection[]
+  violations     Violation[]
+  complaints     Complaint[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Inspection {
+  id          String   @id @default(cuid())
+  facilityId  String
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  date        DateTime
+  inspectorId String
+  status      String   // completed, pending, in-progress
+  score       Float
+  findings    Json
+  aiSummary   String?
+  createdAt   DateTime @default(now())
+
+  @@index([facilityId])
+}
+
+model Violation {
+  id                String   @id @default(cuid())
+  facilityId        String
+  facility          Facility @relation(fields: [facilityId], references: [id])
+  date              DateTime
+  type              String
+  severity          String   // Critical, High, Medium, Low
+  description       String
+  descriptionAr     String?
+  regulatoryArticle String?
+  penalty           Float?
+  status            String   // open, resolved, appealed
+  aiClassification  Json?
+  createdAt         DateTime @default(now())
+
+  @@index([facilityId])
+}
+
+model Complaint {
+  id          String   @id @default(cuid())
+  facilityId  String
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  date        DateTime
+  source      String   // CRM, OTA, direct
+  category    String
+  severity    String
+  description String
+  status      String
+  createdAt   DateTime @default(now())
+
+  @@index([facilityId])
+}
